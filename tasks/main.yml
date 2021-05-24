@@ -1,0 +1,44 @@
+---
+# tasks file for jmeter-install
+
+- name: get present working directory
+  command: pwd
+  register: working_dir
+  tags: get present directory
+
+- debug:
+    var: working_dir.stdout_lines
+
+- name: create jmeter directory
+  file: 
+    path: "{{ working_dir.stdout_lines[0] }}/{{ jmeter_base_dir }}"
+    state: directory
+  tags: create jmeter directory
+
+- name: Download JMeter
+  get_url: 
+    url=" {{ download_url }} "
+    dest="{{ working_dir.stdout_lines[0] }}/{{ jmeter_base_dir }}"
+    checksum= sha512:{{ download_url }}.sha512
+  register: downloaded
+  tags: download jmeter
+
+- name: unarchive
+  unarchive:
+    src: "{{ working_dir.stdout_lines[0] }}/{{ jmeter_base_dir }}/apache-jmeter-{{ jmeter_version }}.zip"
+    dest: "{{ working_dir.stdout_lines[0] }}/{{ jmeter_base_dir }}/"
+    remote_src: yes
+  tags: unarchive
+
+- name: verify
+  command: "{{ working_dir.stdout_lines[0] }}/{{ jmeter_base_dir }}/apache-jmeter-{{ jmeter_version }}/bin/jmeter.sh --version"
+  register: check_jmeter_version
+  tags: verify jmeter
+
+- name: print jmeter version
+  debug: 
+    var: check_jmeter_version.stdout_lines
+
+- name: delete zip file
+  command: "rm {{ working_dir.stdout_lines[0] }}/{{ jmeter_base_dir }}/apache-jmeter-{{ jmeter_version }}.zip -r"
+  tags: delete zip file

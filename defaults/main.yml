@@ -1,0 +1,5 @@
+---
+# defaults file for jmeter-install
+jmeter_version: 5.4.1
+download_url: https://downloads.apache.org/jmeter/binaries/apache-jmeter-{{ jmeter_version }}.zip
+jmeter_base_dir: jmeter
