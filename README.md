@@ -1,4 +1,4 @@
-Role Name
+JMeter Role
 =========
 
 An Ansible role to install [Apache JMeter](https://jmeter.apache.org). 
